@@ -17,21 +17,21 @@ const taskSchema = new Schema<ITask>(
 		description: String,
 		dueDate: Date,
 		completed: { type: Boolean, default: false },
-		completedAt: Date
+		completedAt: Date,
 	},
 	{
 		timestamps: true,
 		toJSON: {
-			virtuals: true
+			virtuals: true,
 		},
 		toObject: {
-			virtuals: true
+			virtuals: true,
 		},
 		collation: {
 			locale: 'en_US',
-			numericOrdering: true
-		}
-	}
+			numericOrdering: true,
+		},
+	},
 );
 
 if (models['Task']) {
