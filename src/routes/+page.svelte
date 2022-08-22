@@ -1,5 +1,10 @@
 <script lang="ts">
 	import { DateTime } from 'luxon';
+	import type { ITask } from '$lib/models/task';
+	import type { PageData } from './$types';
+
+	export let data: PageData;
+
 	let adding = false;
 </script>
 
@@ -27,9 +32,7 @@
 				<div class="row">
 					<div class="col">
 						<h4 class="card-title text-decoration-line-through">Task 2</h4>
-						<div class="card-text text-muted text-decoration-line-through mb-2">
-							Task 2 Description
-						</div>
+						<div class="card-text text-muted text-decoration-line-through mb-2">Task 2 Description</div>
 						<div class="card-text text-muted timestamp">
 							{DateTime.fromJSDate(new Date()).toFormat('dd MMM, yyyy hh:mm a')}
 						</div>
@@ -50,8 +53,7 @@
 				type="button"
 				on:click={() => {
 					adding = true;
-				}}>New Task</button
-			>
+				}}>New Task</button>
 		</div>
 	{:else}
 		<div class="col-6">
@@ -71,15 +73,13 @@
 						type="button"
 						on:click={() => {
 							adding = false;
-						}}>Create To Do</button
-					>
+						}}>Create To Do</button>
 					<button
 						class="btn btn-outline-secondary"
 						type="button"
 						on:click={() => {
 							adding = false;
-						}}>Cancel</button
-					>
+						}}>Cancel</button>
 				</div>
 			</form>
 		</div>
