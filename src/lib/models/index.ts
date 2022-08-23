@@ -1,3 +1,3 @@
 export const initModels = () => {
-    import('$lib/models/task');
-}
+	import('$lib/models/todo');
+};

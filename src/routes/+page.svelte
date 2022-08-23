@@ -1,9 +1,16 @@
 <script lang="ts">
+	import { invalidate } from '$app/navigation';
+	import { page } from '$app/stores';
+
 	import { DateTime } from 'luxon';
-	import type { ITask } from '$lib/models/task';
 	import type { PageData } from './$types';
 
 	export let data: PageData;
+	$: ({ todos = [] } = data);
+
+	const refreshTodos = () => {
+		invalidate($page.url.pathname);
+	};
 
 	let adding = false;
 </script>
@@ -11,6 +18,9 @@
 <h1 class="text-center mb-4">To Do Manager</h1>
 <section class="row justify-content-center mb-3">
 	<div class="col-8">
+		{#each todos as todo (todo._id)}
+			{todo.title}
+		{/each}
 		<div class="card shadow shadow-sm mb-3 ">
 			<div class="card-body">
 				<div class="row">
@@ -22,7 +32,7 @@
 						</div>
 					</div>
 					<div class="col-auto">
-						<button class="btn btn-sm btn-outline-primary"> Mark Complete </button>
+						<button class="btn btn-sm btn-outline-primary" on:click={refreshTodos}> Mark Complete </button>
 					</div>
 				</div>
 			</div>

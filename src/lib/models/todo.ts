@@ -1,6 +1,6 @@
 import { Schema, model, models } from 'mongoose';
 
-export interface ITask
+export interface ITodo
 	extends DeepPartial<{
 		title: string;
 		description: string;
@@ -11,7 +11,7 @@ export interface ITask
 		updatedAt: Date;
 	}> {}
 
-const taskSchema = new Schema<ITask>(
+const todoSchema = new Schema<ITodo>(
 	{
 		title: String,
 		description: String,
@@ -34,10 +34,10 @@ const taskSchema = new Schema<ITask>(
 	},
 );
 
-if (models['Task']) {
-	delete models['Task'];
+if (models['Todo']) {
+	delete models['Todo'];
 }
 
-export const Task = model<ITask>('Task', taskSchema);
+export const Todo = model<ITodo>('Todo', todoSchema);
 
-Task.syncIndexes().catch((err) => {});
+Todo.syncIndexes().catch((err) => {});
