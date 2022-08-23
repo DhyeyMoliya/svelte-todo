@@ -1,18 +1,34 @@
 <script lang="ts">
 	import { invalidate } from '$app/navigation';
 	import { page } from '$app/stores';
-
 	import { DateTime } from 'luxon';
 	import type { PageData } from './$types';
+	import { createForm } from 'svelte-form-validation';
+	import * as yup from 'yup';
 
 	export let data: PageData;
 	$: ({ todos = [] } = data);
+
+	let adding = false;
+	let { values, highlight, isValid, resetForm } = createForm({
+		values: {
+			title: '',
+			description: '',
+		},
+		validationSchema: yup.object().shape({
+			title: yup.string().required(),
+			description: yup.string(),
+		}),
+	});
 
 	const refreshTodos = () => {
 		invalidate($page.url.pathname);
 	};
 
-	let adding = false;
+	const createTodo = () => {
+		adding = false;
+		console.log($values);
+	};
 </script>
 
 <h1 class="text-center mb-4">To Do Manager</h1>
@@ -71,19 +87,14 @@
 				<h3>Create New Task</h3>
 				<div class="mb-3">
 					<label for="new-task-title" class="form-label">Task Title</label>
-					<input type="text" class="form-control" id="new-task-title" />
+					<input type="text" class="form-control" id="new-task-title" name="title" bind:value={$values.title} use:highlight />
 				</div>
 				<div class="mb-3">
 					<label for="new-task-description" class="form-label">Task Description</label>
-					<textarea rows="4" class="form-control" id="new-task-description" />
+					<textarea rows="4" class="form-control" id="new-task-description" name="description" bind:value={$values.description} use:highlight />
 				</div>
 				<div class="text-center">
-					<button
-						class="btn btn-primary"
-						type="button"
-						on:click={() => {
-							adding = false;
-						}}>Create To Do</button>
+					<button class="btn btn-primary" type="button" on:click={createTodo}>Create To Do</button>
 					<button
 						class="btn btn-outline-secondary"
 						type="button"
