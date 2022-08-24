@@ -1,17 +1,20 @@
-import { Schema, model, models } from 'mongoose';
+import { Schema, model, models, type Document, type Model } from 'mongoose';
 
 export interface ITodo
-	extends DeepPartial<{
-		title: string;
-		description: string;
-		dueDate: Date;
-		completed: boolean;
-		completedAt: Date;
-		createdAt: Date;
-		updatedAt: Date;
-	}> {}
+	extends Partial<Document>,
+		DeepPartial<{
+			title: string;
+			description: string;
+			dueDate: Date;
+			completed: boolean;
+			completedAt: Date;
+			createdAt: Date;
+			updatedAt: Date;
+		}> {}
 
-const todoSchema = new Schema<ITodo>(
+interface ITodoModel extends Model<ITodo> {}
+
+const todoSchema = new Schema<ITodo, ITodoModel>(
 	{
 		title: String,
 		description: String,
@@ -38,6 +41,6 @@ if (models['Todo']) {
 	delete models['Todo'];
 }
 
-export const Todo = model<ITodo>('Todo', todoSchema);
+export const Todo = model<ITodo, ITodoModel>('Todo', todoSchema);
 
 Todo.syncIndexes().catch((err) => {});
