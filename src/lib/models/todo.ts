@@ -1,4 +1,7 @@
-import { Schema, model, models, type Document, type Model } from 'mongoose';
+import mongoose from 'mongoose';
+import type { Document, Model } from 'mongoose';
+
+const { Schema, model, models } = mongoose;
 
 export interface ITodo
 	extends Partial<Document>,

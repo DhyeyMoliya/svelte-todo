@@ -26,7 +26,7 @@
 	});
 
 	const onRefreshTodos = () => {
-		invalidate($page.url.toString());
+		invalidate();
 	};
 
 	const onFilterTodos = async (event: Event) => {
