@@ -43,7 +43,23 @@
 	const onCreateTodo = async () => {
 		await createTodo($values);
 		adding = false;
+		resetForm({
+			title: '',
+			description: '',
+		});
 		onRefreshTodos();
+	};
+
+	const onAdd = () => {
+		adding = true;
+	};
+
+	const onCancelAdding = () => {
+		adding = false;
+		resetForm({
+			title: '',
+			description: '',
+		});
 	};
 
 	const onUpdateTodoStatus = async (todoId: string, completed: boolean) => {
@@ -64,20 +80,15 @@
 			</div>
 			{#if !adding}
 				<div class="col-auto">
-					<button
-						class="btn btn-outline-primary"
-						type="button"
-						on:click={() => {
-							adding = true;
-						}}>New To Do</button>
+					<button class="btn btn-outline-primary" type="button" on:click={onAdd}>New To Do</button>
 				</div>
 			{/if}
 		</div>
 	</div>
 </section>
 {#if adding}
-	<div class="row justify-content-center">
-		<div class="col-6">
+	<section class="row justify-content-center mb-3">
+		<div class="col-8">
 			<form class="border shadow-sm shadow-primary rounded p-3 bg-light">
 				<h3>Create New To Do</h3>
 				<div class="mb-3">
@@ -90,16 +101,11 @@
 				</div>
 				<div class="text-center">
 					<button class="btn btn-primary" type="button" on:click={onCreateTodo} disabled={!$isValid}>Create To Do</button>
-					<button
-						class="btn btn-outline-secondary"
-						type="button"
-						on:click={() => {
-							adding = false;
-						}}>Cancel</button>
+					<button class="btn btn-outline-secondary" type="button" on:click={onCancelAdding}>Cancel</button>
 				</div>
 			</form>
 		</div>
-	</div>
+	</section>
 {/if}
 <section class="row justify-content-center mb-3">
 	<div class="col-8">
