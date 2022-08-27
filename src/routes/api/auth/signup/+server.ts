@@ -1,5 +1,5 @@
-import { createHash, verifyHash } from '$lib/helpers/hash';
-import { handleError, successRes } from '$lib/helpers/response';
+import { createHash, verifyHash } from '$lib/helpers/server/hash';
+import { handleError, successRes } from '$lib/helpers/server/response';
 import { User, type IUser } from '$lib/models/user';
 import { error, type RequestHandler } from '@sveltejs/kit';
 import { randomUUID } from 'crypto';

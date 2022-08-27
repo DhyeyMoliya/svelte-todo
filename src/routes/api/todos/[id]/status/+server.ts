@@ -1,13 +1,13 @@
-import { handleError, successRes } from '$lib/helpers/response';
+import { handleError, successRes } from '$lib/helpers/server/response';
 import { Todo } from '$lib/models/todo';
 import { error, type RequestHandler } from '@sveltejs/kit';
 
-export const PUT: RequestHandler = async ({ request, params }) => {
+export const PUT: RequestHandler = async ({ request, params, locals }) => {
 	try {
 		const body: { completed: boolean } = await request.json();
 		const todo = await Todo.findById(params.id);
 
-		if (!todo) {
+		if (!todo || todo.user.toString() !== locals.user._id) {
 			throw error(404);
 		}
 

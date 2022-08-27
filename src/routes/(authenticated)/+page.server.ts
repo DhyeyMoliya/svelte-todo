@@ -1,20 +1,17 @@
-import { toJSON } from '$lib/helpers/object';
-import { handleError, successRes } from '$lib/helpers/response';
+import { base } from '$app/paths';
+import { toJSON } from '$lib/helpers/common/object';
+import { handleError, successRes } from '$lib/helpers/server/response';
 import { Todo, type ITodo } from '$lib/models/todo';
+import { error } from '@sveltejs/kit';
+import { GET } from '../api/todos/+server';
 import type { PageServerLoad } from './$types';
 
-export const load: PageServerLoad = async ({ url, locals }) => {
+export const load: PageServerLoad = async (event) => {
 	try {
-		const filter = url.searchParams.get('filter');
-		const query: any = {
-			completed: false,
-		};
-		if (filter === 'all') {
-			delete query.completed;
-		}
-		const todos = (await Todo.find(query).sort({ createdAt: -1 })).map((todo) => todo.toJSON() as ITodo);
+		const response = await GET(event);
+		const responseBody = await response.json();
 		return {
-			todos: toJSON(todos),
+			todos: responseBody.data || [],
 		};
 	} catch (err) {
 		handleError(err);

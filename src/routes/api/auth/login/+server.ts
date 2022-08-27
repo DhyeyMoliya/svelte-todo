@@ -1,7 +1,7 @@
 import { base } from '$app/paths';
-import { createHash, verifyHash } from '$lib/helpers/hash';
-import { handleError, successRes } from '$lib/helpers/response';
-import { sessionExpiryDuration } from '$lib/helpers/session';
+import { createHash, verifyHash } from '$lib/helpers/server/hash';
+import { handleError, successRes } from '$lib/helpers/server/response';
+import { sessionExpiryDuration } from '$lib/helpers/server/session';
 import { User, type IUser } from '$lib/models/user';
 import { UserSession } from '$lib/models/user-session';
 import { error, type RequestHandler } from '@sveltejs/kit';

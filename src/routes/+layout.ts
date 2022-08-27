@@ -1,4 +1,4 @@
-import { session } from '$lib/helpers/client-session';
+import { session } from '$lib/helpers/client/client-session';
 import type { LayoutLoad } from './$types';
 
 export const load: LayoutLoad = async ({ data }) => {

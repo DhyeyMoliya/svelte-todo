@@ -6,7 +6,6 @@
 	import { createForm } from 'svelte-form-validation';
 	import * as yup from 'yup';
 	import { createTodo, updateTodoStatus } from '$lib/services/todos';
-	import { session } from '$lib/helpers/client-session';
 
 	export let data: PageData;
 	$: ({ todos = [] } = data);

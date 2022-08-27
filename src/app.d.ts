@@ -5,6 +5,7 @@ declare namespace App {
 	interface Locals {
 		sessionId: string;
 		user: {
+			_id: string;
 			name: string;
 			email: string;
 		};

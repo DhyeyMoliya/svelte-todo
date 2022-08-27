@@ -1,11 +1,13 @@
 import mongoose from 'mongoose';
 import type { Document, Model } from 'mongoose';
+import type { IUser } from './user';
 
 const { Schema, model, models } = mongoose;
 
 export interface ITodo
 	extends Partial<Document>,
 		DeepPartial<{
+			user: string | IUser;
 			title: string;
 			description: string;
 			dueDate: Date;
@@ -19,6 +21,10 @@ interface ITodoModel extends Model<ITodo> {}
 
 const todoSchema = new Schema<ITodo, ITodoModel>(
 	{
+		user: {
+			type: Schema.Types.ObjectId,
+			ref: 'User',
+		},
 		title: String,
 		description: String,
 		dueDate: Date,

@@ -1,10 +1,11 @@
 import type { Handle } from '@sveltejs/kit';
-import { connectMongoDB } from '$lib/helpers/db';
+import { connectMongoDB } from '$lib/helpers/server/db';
 import { initModels } from '$lib/models';
 import * as cookie from 'cookie';
 import { UserSession } from '$lib/models/user-session';
 import type { IUser } from '$lib/models/user';
 import { base } from '$app/paths';
+import { validateSession } from '$lib/helpers/server/session';
 
 connectMongoDB().then(() => {
 	initModels();
@@ -21,6 +22,7 @@ export const handle: Handle = async ({ event, resolve }) => {
 
 				event.locals.sessionId = cookies.session;
 				event.locals.user = {
+					_id: sessionUser._id.toString(),
 					name: sessionUser.name,
 					email: sessionUser.email,
 				};
@@ -36,6 +38,14 @@ export const handle: Handle = async ({ event, resolve }) => {
 			}
 		} catch (err) {
 			console.log(err);
+		}
+	}
+
+	if (event.url.pathname.startsWith('/api') && (event.url.pathname.startsWith('/api/auth/logout') || !event.url.pathname.startsWith('/api/auth'))) {
+		if (!validateSession(event.locals)) {
+			return new Response('Unauthorized', {
+				status: 401,
+			});
 		}
 	}
 

@@ -1,6 +1,6 @@
 import { base } from '$app/paths';
-import { postData, putData } from '$lib/helpers/api';
-import { ErrorToast, SuccessToast } from '$lib/helpers/toasts';
+import { postData, putData } from '$lib/helpers/client/api';
+import { ErrorToast, SuccessToast } from '$lib/helpers/client/toasts';
 
 export const createTodo = async (data: any) => {
 	try {
