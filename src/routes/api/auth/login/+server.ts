@@ -7,7 +7,7 @@ import { UserSession } from '$lib/models/user-session';
 import { error, type RequestHandler } from '@sveltejs/kit';
 import * as cookie from 'cookie';
 
-export const POST: RequestHandler = async ({ request, setHeaders }) => {
+export const POST: RequestHandler = async ({ request, setHeaders, locals }) => {
 	try {
 		const body: { email: string; password: string } = await request.json();
 		if (!body.email || !body.password) {
@@ -21,6 +21,10 @@ export const POST: RequestHandler = async ({ request, setHeaders }) => {
 
 		if (!verifyHash(body.password, user.hashedPassword)) {
 			throw error(401);
+		}
+
+		if (locals.sessionId) {
+			await UserSession.remove({ _id: locals.sessionId });
 		}
 
 		const newSession = new UserSession({
