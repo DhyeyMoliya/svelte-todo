@@ -6,7 +6,7 @@
 	import { createForm } from 'svelte-form-validation';
 	import * as yup from 'yup';
 	import { createTodo, updateTodoStatus } from '$lib/services/todos';
-	import type { ITodo } from '$lib/models/todo';
+	import { session } from '$lib/helpers/client-session';
 
 	export let data: PageData;
 	$: ({ todos = [] } = data);
@@ -68,7 +68,6 @@
 	};
 </script>
 
-<h1 class="text-center mb-4">To Do Manager</h1>
 <section class="row gx-3 justify-content-center mb-3">
 	<div class="col-8">
 		<div class="row align-items-center justify-content-end">

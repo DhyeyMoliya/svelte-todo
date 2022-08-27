@@ -1,9 +1,9 @@
 import { toJSON } from '$lib/helpers/object';
 import { handleError, successRes } from '$lib/helpers/response';
 import { Todo, type ITodo } from '$lib/models/todo';
-import type { ServerLoad } from '@sveltejs/kit';
+import type { PageServerLoad } from './$types';
 
-export const load: ServerLoad = async ({ url }) => {
+export const load: PageServerLoad = async ({ url, locals }) => {
 	try {
 		const filter = url.searchParams.get('filter');
 		const query: any = {
