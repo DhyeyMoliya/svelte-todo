@@ -10,9 +10,10 @@ declare namespace App {
 			email: string;
 		};
 	}
+
+	// interface PageData {}
+
 	// interface Platform {}
-	// interface PrivateEnv {}
-	// interface PublicEnv {}
 }
 
 declare type DeepPartial<T> = T extends Function ? T : T extends object ? { [P in keyof T]?: DeepPartial<T[P]> } : T;

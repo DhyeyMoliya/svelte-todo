@@ -1,4 +1,4 @@
-import { browser } from '$app/env';
+import { browser } from '$app/environment';
 import type { INotyfNotificationOptions } from 'notyf';
 import { Notyf, NotyfEvent } from 'notyf';
 

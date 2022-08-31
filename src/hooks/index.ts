@@ -1,3 +1,5 @@
+import dotenv from 'dotenv';
+dotenv.config();
 import type { Handle } from '@sveltejs/kit';
 import { connectMongoDB } from '$lib/helpers/server/db';
 import { initModels } from '$lib/models';

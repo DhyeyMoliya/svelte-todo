@@ -8,8 +8,8 @@
         "preview": "vite preview",
         "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
         "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
-        "lint": "prettier --check --plugin-search-dir=. .",
-        "format": "prettier --write --plugin-search-dir=. ."
+        "lint": "prettier --check .",
+        "format": "prettier --write ."
     },
     "devDependencies": {
         "@sveltejs/adapter-node": "next",
@@ -18,20 +18,21 @@
         "notyf": "^3.10.0",
         "prettier": "^2.7.1",
         "prettier-plugin-svelte": "^2.7.0",
-        "sass": "^1.54.5",
+        "sass": "^1.54.7",
         "svelte": "^3.49.0",
-        "svelte-check": "^2.8.1",
+        "svelte-check": "^2.9.0",
         "svelte-form-validation": "^1.0.5",
         "svelte-preprocess": "^4.10.7",
         "tslib": "^2.4.0",
         "typescript": "^4.8.2",
-        "vite": "^3.0.9",
+        "vite": "^3.1.0-beta.1",
         "yup": "^0.32.11"
     },
     "type": "module",
     "dependencies": {
-        "mongoose": "^6.5.3",
         "cookie": "^0.5.0",
-        "luxon": "^3.0.1"
+        "dotenv": "^16.0.2",
+        "luxon": "^3.0.3",
+        "mongoose": "^6.5.4"
     }
 }

@@ -1,7 +1,7 @@
 import { base } from '$app/paths';
-import { createHash, verifyHash } from '$lib/helpers/server/hash';
+import { verifyHash } from '$lib/helpers/server/hash';
 import { handleError, successRes } from '$lib/helpers/server/response';
-import { sessionExpiryDuration } from '$lib/helpers/server/session';
+import { getSessionExpiryDuration } from '$lib/helpers/server/session';
 import { User, type IUser } from '$lib/models/user';
 import { UserSession } from '$lib/models/user-session';
 import { error, type RequestHandler } from '@sveltejs/kit';
@@ -43,7 +43,7 @@ export const POST: RequestHandler = async ({ request, setHeaders, locals }) => {
 			'set-cookie': cookie.serialize('session', newSession._id, {
 				path: `${base}/`,
 				httpOnly: true,
-				maxAge: sessionExpiryDuration / 1000,
+				maxAge: getSessionExpiryDuration() / 1000,
 			}),
 		});
 	} catch (err) {

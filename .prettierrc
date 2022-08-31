@@ -3,5 +3,16 @@
     "singleQuote": true,
     "trailingComma": "all",
     "printWidth": 180,
-    "svelteBracketNewLine": false
+    "svelteBracketNewLine": false,
+    "pluginSearchDirs": [
+        "."
+    ],
+    "overrides": [
+        {
+            "files": "*.svelte",
+            "options": {
+                "parser": "svelte"
+            }
+        }
+    ]
 }
