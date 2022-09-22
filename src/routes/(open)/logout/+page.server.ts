@@ -1,8 +1,8 @@
-import { base } from '$app/paths';
 import { UserSession } from '$lib/models/user-session';
 import type { PageServerLoad } from './$types';
 import { handleError } from '$lib/server/response';
 import { redirect } from '@sveltejs/kit';
+import { base } from '$app/paths';
 
 export const load: PageServerLoad = async ({ locals, cookies }) => {
 	try {
@@ -13,8 +13,6 @@ export const load: PageServerLoad = async ({ locals, cookies }) => {
 		locals.user = null;
 
 		cookies.delete('session');
-
-		return {};
 	} catch (err) {
 		handleError(err);
 	}

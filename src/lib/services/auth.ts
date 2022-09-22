@@ -1,5 +1,5 @@
 import { base } from '$app/paths';
-import { postData, putData } from '$lib/helpers/api';
+import { postData } from '$lib/helpers/api';
 import { ErrorToast, SuccessToast } from '$lib/helpers/toasts';
 
 export const login = async (data: any) => {

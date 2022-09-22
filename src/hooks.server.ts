@@ -6,7 +6,6 @@ import { initModels } from '$lib/models';
 import * as cookie from 'cookie';
 import { UserSession } from '$lib/models/user-session';
 import type { IUser } from '$lib/models/user';
-import { base } from '$app/paths';
 import { validateSession } from '$lib/server/session';
 
 connectMongoDB().then(() => {

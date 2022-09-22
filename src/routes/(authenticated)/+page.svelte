@@ -6,7 +6,7 @@
 	import { createForm } from 'svelte-form-validation';
 	import * as yup from 'yup';
 	import { createTodo, updateTodo, updateTodoStatus } from '$lib/services/todos';
-	import type { ITodo, Todo } from '$lib/models/todo';
+	import type { ITodo } from '$lib/models/todo';
 	import { tick } from 'svelte';
 
 	export let data: PageData;
