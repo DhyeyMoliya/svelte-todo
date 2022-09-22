@@ -1,5 +1,5 @@
-import { toJSON } from '$lib/helpers/common/object';
-import { handleError, successRes } from '$lib/helpers/server/response';
+import { toJSON } from '$lib/helpers/object';
+import { handleError, successRes } from '$lib/server/response';
 import { Todo, type ITodo } from '$lib/models/todo';
 import { error, type RequestHandler } from '@sveltejs/kit';
 

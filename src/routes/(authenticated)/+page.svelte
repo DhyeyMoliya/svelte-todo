@@ -45,7 +45,7 @@
 	});
 
 	const onRefreshTodos = () => {
-		invalidate().then(() => {
+		invalidate('page:data').then(() => {
 			editingTodo = null;
 		});
 	};
@@ -135,7 +135,7 @@
 		<div class="row align-items-center justify-content-end">
 			<div class="col-auto">
 				<div class="form-check form-switch">
-					<input class="form-check-input" type="checkbox" role="switch" id="filterMode" bind:checked={showAll} on:change={onFilterTodos} />
+					<input class="form-check-input" type="checkbox" role="switch" id="filterMode" aria-checked={showAll} bind:checked={showAll} on:change={onFilterTodos} />
 					<label class="form-check-label" for="filterMode">Show Completed</label>
 				</div>
 			</div>

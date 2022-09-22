@@ -1,5 +1,5 @@
-import { createHash } from '$lib/helpers/server/hash';
-import { handleError, successRes } from '$lib/helpers/server/response';
+import { createHash } from '$lib/server/hash';
+import { handleError, successRes } from '$lib/server/response';
 import { User, type IUser } from '$lib/models/user';
 import { error, type RequestHandler } from '@sveltejs/kit';
 

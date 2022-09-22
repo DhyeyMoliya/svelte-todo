@@ -1,28 +1,28 @@
 import dotenv from 'dotenv';
 dotenv.config();
 import type { Handle } from '@sveltejs/kit';
-import { connectMongoDB } from '$lib/helpers/server/db';
+import { connectMongoDB } from '$lib/server/db';
 import { initModels } from '$lib/models';
 import * as cookie from 'cookie';
 import { UserSession } from '$lib/models/user-session';
 import type { IUser } from '$lib/models/user';
 import { base } from '$app/paths';
-import { validateSession } from '$lib/helpers/server/session';
+import { validateSession } from '$lib/server/session';
 
 connectMongoDB().then(() => {
 	initModels();
 });
 
 export const handle: Handle = async ({ event, resolve }) => {
-	const cookies = cookie.parse(event.request.headers.get('cookie') || '');
-	if (cookies.session) {
+	const cookiesData = cookie.parse(event.request.headers.get('cookie') || '');
+	if (cookiesData.session) {
 		try {
-			const session = await UserSession.findById(cookies.session).populate('user', 'name email');
+			const session = await UserSession.findById(cookiesData.session).populate('user', 'name email');
 			if (session) {
 				const sessionUser = session.user as IUser;
 				session.lastAccessedAt = new Date();
 
-				event.locals.sessionId = cookies.session;
+				event.locals.sessionId = cookiesData.session;
 				event.locals.user = {
 					_id: sessionUser._id.toString(),
 					name: sessionUser.name,
@@ -31,15 +31,10 @@ export const handle: Handle = async ({ event, resolve }) => {
 
 				await session.save();
 			} else {
-				event.setHeaders({
-					'set-cookie': cookie.serialize('session', '', {
-						path: `${base}/`,
-						expires: new Date(0),
-					}),
-				});
+				event.cookies.delete('session');
 			}
 		} catch (err) {
-			console.log(err);
+			console.error(err);
 		}
 	}
 

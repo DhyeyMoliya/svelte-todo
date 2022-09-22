@@ -1,13 +1,13 @@
 import { base } from '$app/paths';
-import { verifyHash } from '$lib/helpers/server/hash';
-import { handleError, successRes } from '$lib/helpers/server/response';
-import { getSessionExpiryDuration } from '$lib/helpers/server/session';
+import { verifyHash } from '$lib/server/hash';
+import { handleError, successRes } from '$lib/server/response';
+import { getSessionExpiryDuration } from '$lib/server/session';
 import { User, type IUser } from '$lib/models/user';
 import { UserSession } from '$lib/models/user-session';
 import { error, type RequestHandler } from '@sveltejs/kit';
 import * as cookie from 'cookie';
 
-export const POST: RequestHandler = async ({ request, setHeaders, locals }) => {
+export const POST: RequestHandler = async ({ request, locals }) => {
 	try {
 		const body: { email: string; password: string } = await request.json();
 		if (!body.email || !body.password) {
@@ -24,7 +24,7 @@ export const POST: RequestHandler = async ({ request, setHeaders, locals }) => {
 		}
 
 		if (locals.sessionId) {
-			await UserSession.remove({ _id: locals.sessionId });
+			await UserSession.deleteOne({ _id: locals.sessionId });
 		}
 
 		const newSession = new UserSession({

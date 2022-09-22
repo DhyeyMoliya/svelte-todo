@@ -1,4 +1,4 @@
-import { handleError, successRes } from '$lib/helpers/server/response';
+import { handleError, successRes } from '$lib/server/response';
 import { Todo } from '$lib/models/todo';
 import { error, type RequestHandler } from '@sveltejs/kit';
 

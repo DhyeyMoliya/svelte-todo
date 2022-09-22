@@ -1,8 +1,10 @@
 <script lang="ts">
 	import { goto, invalidate } from '$app/navigation';
 	import { base } from '$app/paths';
+	import { page } from '$app/stores';
 
 	import { login } from '$lib/services/auth';
+	import { redirect } from '@sveltejs/kit';
 
 	import { createForm } from 'svelte-form-validation';
 	import * as yup from 'yup';
@@ -20,7 +22,9 @@
 
 	const onLogin = async () => {
 		const res = await login($values);
-		res && invalidate();
+		if (res) {
+			location.href = '/';
+		}
 	};
 </script>
 

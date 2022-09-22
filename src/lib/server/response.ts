@@ -20,7 +20,7 @@ export const successRes = (body: any = {}, status = 200, headers = {}, stringifi
 
 export const handleError = (err) => {
 	console.error(err);
-	if (err?.name === 'HttpError' || err?.location) {
+	if (err?.status || err?.location) {
 		throw err;
 	}
 	throw error(500);

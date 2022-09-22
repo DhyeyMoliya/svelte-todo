@@ -1,19 +1,20 @@
 import { base } from '$app/paths';
 import { UserSession } from '$lib/models/user-session';
 import type { PageServerLoad } from './$types';
-import { handleError } from '$lib/helpers/server/response';
+import { handleError } from '$lib/server/response';
 import { redirect } from '@sveltejs/kit';
 
-export const load: PageServerLoad = async ({ locals, parent, setHeaders }) => {
+export const load: PageServerLoad = async ({ locals, cookies }) => {
 	try {
-		await parent();
 		if (locals.sessionId) {
 			await UserSession.findByIdAndRemove(locals.sessionId);
 		}
 		locals.sessionId = null;
 		locals.user = null;
 
-		throw redirect(307, `${base}/`);
+		cookies.delete('session');
+
+		return {};
 	} catch (err) {
 		handleError(err);
 	}
