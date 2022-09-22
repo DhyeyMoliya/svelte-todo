@@ -5,13 +5,16 @@
 	import type { PageData } from './$types';
 	import { createForm } from 'svelte-form-validation';
 	import * as yup from 'yup';
-	import { createTodo, updateTodoStatus } from '$lib/services/todos';
+	import { createTodo, updateTodo, updateTodoStatus } from '$lib/services/todos';
+	import type { ITodo, Todo } from '$lib/models/todo';
+	import { tick } from 'svelte';
 
 	export let data: PageData;
 	$: ({ todos = [] } = data);
 
 	let adding = false;
 	let showAll = $page.url.searchParams.get('filter') === 'all';
+	let editingTodo: string = null;
 
 	let { values, highlight, isValid, resetForm } = createForm({
 		values: {
@@ -24,8 +27,27 @@
 		}),
 	});
 
+	let {
+		values: editValues,
+		highlight: editHighlight,
+		isValid: editIsValid,
+		validateForm: editValidateForm,
+		resetForm: editResetForm,
+	} = createForm({
+		values: {
+			title: '',
+			description: '',
+		},
+		validationSchema: yup.object().shape({
+			title: yup.string().trim().required(),
+			description: yup.string(),
+		}),
+	});
+
 	const onRefreshTodos = () => {
-		invalidate();
+		invalidate().then(() => {
+			editingTodo = null;
+		});
 	};
 
 	const onFilterTodos = async (event: Event) => {
@@ -65,7 +87,48 @@
 		await updateTodoStatus(todoId, completed);
 		onRefreshTodos();
 	};
+
+	const onClickTodo = async (todo: ITodo, todoIndex: number) => {
+		editingTodo = todo._id;
+		editResetForm({
+			title: todo.title,
+			description: todo.description,
+		});
+		editValidateForm();
+		await tick();
+		document.getElementById(`edit-todo-title-${todo._id}`)?.focus();
+	};
+
+	const onKeyDownEditDescription = async (event: KeyboardEvent) => {
+		if ($editIsValid && event.code === 'Enter' && (event.metaKey || event.ctrlKey)) {
+			onUpdateTodo();
+		}
+	};
+
+	const onUpdateTodo = async () => {
+		const res = await updateTodo(editingTodo, $editValues);
+		if (res) {
+			onRefreshTodos();
+		}
+	};
+
+	const onCancelUpdateTodo = () => {
+		editingTodo = null;
+		editResetForm({
+			title: '',
+			description: '',
+		});
+		editValidateForm();
+	};
+
+	const onPageKeyUpEvent = (event: KeyboardEvent) => {
+		if (editingTodo && event.code === 'Escape') {
+			onCancelUpdateTodo();
+		}
+	};
 </script>
+
+<svelte:window on:keyup={onPageKeyUpEvent} />
 
 <section class="row gx-3 justify-content-center mb-3">
 	<div class="col-8">
@@ -87,7 +150,7 @@
 {#if adding}
 	<section class="row justify-content-center mb-3">
 		<div class="col-8">
-			<form class="border shadow-sm shadow-primary rounded p-3 bg-light">
+			<form class="border shadow-sm shadow-primary rounded p-3 bg-light" on:submit|preventDefault|stopPropagation={$isValid && onCreateTodo}>
 				<h3>Create New To Do</h3>
 				<div class="mb-3">
 					<label for="new-todo-title" class="form-label">To Do*</label>
@@ -98,7 +161,7 @@
 					<textarea rows="4" class="form-control" id="new-todo-description" name="description" bind:value={$values.description} use:highlight />
 				</div>
 				<div class="text-center">
-					<button class="btn btn-primary" type="button" on:click={onCreateTodo} disabled={!$isValid}>Create To Do</button>
+					<button class="btn btn-primary" type="submit" disabled={!$isValid}>Create To Do</button>
 					<button class="btn btn-outline-secondary" type="button" on:click={onCancelAdding}>Cancel</button>
 				</div>
 			</form>
@@ -108,28 +171,55 @@
 <section class="row justify-content-center mb-3">
 	<div class="col-8">
 		{#if todos?.length}
-			{#each todos as todo (todo._id)}
-				<div class="card shadow shadow-sm mb-3 {todo.completed ? 'mb-3 bg-light border-0 shadow-none' : ''}">
+			{#each todos as todo, todoIndex (todo._id)}
+				<div
+					class="card shadow shadow-sm mb-3 {todo.completed ? 'mb-3 bg-light border-0 shadow-none' : ''}"
+					class:bg-primary={editingTodo === todo._id}
+					style:--bs-bg-opacity={editingTodo === todo._id ? '0.1' : '1'}>
 					<div class="card-body">
 						<div class="row">
-							<div class="col">
-								<h4 class="card-title" class:text-decoration-line-through={todo.completed}>{todo.title}</h4>
-								<div class="card-text text-muted mb-2" class:text-decoration-line-through={todo.completed}>
-									<div>
-										{@html todo.description.replace(/\n/g, '</div><div>')}
+							{#if editingTodo !== todo._id}
+								<div class="col" style:cursor="pointer" on:click={() => onClickTodo(todo, todoIndex)}>
+									<h4 class="card-title" class:text-decoration-line-through={todo.completed}>{todo.title}</h4>
+									<div class="card-text text-muted mb-2" class:text-decoration-line-through={todo.completed}>
+										<div>
+											{@html todo.description.replace(/\n/g, '</div><div>')}
+										</div>
+									</div>
+									<div class="card-text text-muted timestamp">
+										{DateTime.fromISO(todo.createdAt.toString()).toFormat('dd MMM, yyyy hh:mm a')}
 									</div>
 								</div>
-								<div class="card-text text-muted timestamp">
-									{DateTime.fromISO(todo.createdAt.toString()).toFormat('dd MMM, yyyy hh:mm a')}
+								<div class="col-auto">
+									{#if !todo.completed}
+										<button class="btn btn-sm btn-outline-success" on:click={() => onUpdateTodoStatus(todo._id, true)}> Mark Complete </button>
+									{:else}
+										<button class="btn btn-sm btn-outline-secondary" on:click={() => onUpdateTodoStatus(todo._id, false)}> Mark Active </button>
+									{/if}
 								</div>
-							</div>
-							<div class="col-auto">
-								{#if !todo.completed}
-									<button class="btn btn-sm btn-outline-success" on:click={() => onUpdateTodoStatus(todo._id, true)}> Mark Complete </button>
-								{:else}
-									<button class="btn btn-sm btn-outline-secondary" on:click={() => onUpdateTodoStatus(todo._id, false)}> Mark Active </button>
-								{/if}
-							</div>
+							{:else}
+								<form
+									on:submit|preventDefault|stopPropagation={() => {
+										$editIsValid && onUpdateTodo();
+									}}>
+									<div class="mb-3">
+										<label for="edit-todo-title-{todo._id}" class="form-label">To Do*</label>
+										<input type="text" class="form-control" id="edit-todo-title-{todo._id}" name="title" bind:value={$editValues.title} use:editHighlight />
+									</div>
+									<div class="mb-1">
+										<label for="edit-todo-description-{todo._id}" class="form-label">Description</label>
+										<textarea
+											rows="4"
+											class="form-control"
+											id="edit-todo-description-{todo._id}"
+											name="description"
+											bind:value={$editValues.description}
+											use:editHighlight
+											on:keydown={onKeyDownEditDescription} />
+									</div>
+									<span class="text-muted"><small><code>Ctrl + Enter</code> to Save or <code>Escape</code> to Cancel</small></span>
+								</form>
+							{/if}
 						</div>
 					</div>
 				</div>

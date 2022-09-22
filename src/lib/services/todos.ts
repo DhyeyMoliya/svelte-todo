@@ -1,6 +1,7 @@
 import { base } from '$app/paths';
 import { postData, putData } from '$lib/helpers/client/api';
 import { ErrorToast, SuccessToast } from '$lib/helpers/client/toasts';
+import type { ITodo } from '$lib/models/todo';
 
 export const createTodo = async (data: any) => {
 	try {
@@ -25,6 +26,23 @@ export const updateTodoStatus = async (todoId: string, completed: boolean) => {
 		const res = await putData({
 			url: `${base}/api/todos/${todoId}/status`,
 			body: { completed },
+		});
+
+		if (res?.status === 'SUCCESS') {
+			return res;
+		}
+		throw new Error();
+	} catch (error) {
+		ErrorToast.show('Something went wrong. Try again.');
+		return null;
+	}
+};
+
+export const updateTodo = async (todoId: string, data: { title: string; description: string }) => {
+	try {
+		const res = await putData({
+			url: `${base}/api/todos/${todoId}`,
+			body: data,
 		});
 
 		if (res?.status === 'SUCCESS') {
